@@ -1,0 +1,82 @@
+version: '3.8'
+
+services:
+  besu-node1:
+    image: hyperledger/besu:latest
+    container_name: besu-node1
+    environment:
+      - BESU_NETWORK_ID=1914
+    volumes:
+      - ./genesis.json:/opt/besu/genesis.json
+      - ./node1:/data
+    ports:
+      - "30303:30303" # P2P port
+      - "8545:8545"   # HTTP RPC port
+    command: >
+      --data-path=data
+      --genesis-file=/opt/besu/genesis.json
+      --network-id=1914
+      --rpc-http-enabled
+      --rpc-http-api=ETH,NET,CLIQUE
+      --rpc-http-host=0.0.0.0
+      --host-allowlist="*"
+      --rpc-http-cors-origins="*"
+    networks:
+      - besu-network
+
+  besu-node2:
+    image: hyperledger/besu:latest
+    container_name: besu-node2
+    environment:
+      - BESU_NETWORK_ID=1914
+    volumes:
+      - ./genesis.json:/opt/besu/genesis.json
+      - ./node2:/data
+    ports:
+      - "30304:30304" # P2P port
+      - "8546:8546"   # HTTP RPC port
+    command: >
+      --data-path=data
+      --genesis-file=/opt/besu/genesis.json
+      --bootnodes=enode://53a29a868689b5da77f6f9294f13879e00347fedec71c18aeb30df9dc9e0dd151f42c77e7e71cd7b8de384f0fcc47d5c31cef8892f026ee17e9c39d34ebad70e@127.0.0.1:30303
+      --network-id=1914
+      --p2p-port=30304
+      --rpc-http-enabled
+      --rpc-http-api=ETH,NET,CLIQUE
+      --host-allowlist="*"
+      --rpc-http-cors-origins="*"
+      --rpc-http-host=0.0.0.0
+      --rpc-http-port=8546
+    networks:
+      - besu-network
+
+  besu-node3:
+    image: hyperledger/besu:latest
+    container_name: besu-node3
+    environment:
+      - BESU_NETWORK_ID=1914
+    volumes:
+      - ./genesis.json:/opt/besu/genesis.json
+      - ./node3:/data
+    ports:
+      - "30305:30305" # P2P port
+      - "8547:8547"   # HTTP RPC port
+    command: >
+      --data-path=data
+      --genesis-file=/opt/besu/genesis.json
+      --bootnodes=enode://53a29a868689b5da77f6f9294f13879e00347fedec71c18aeb30df9dc9e0dd151f42c77e7e71cd7b8de384f0fcc47d5c31cef8892f026ee17e9c39d34ebad70e@127.0.0.1:30303
+      --network-id=1914
+      --p2p-port=30305
+      --rpc-http-enabled
+      --rpc-http-api=ETH,NET,CLIQUE
+      --host-allowlist="*"
+      --rpc-http-cors-origins="*"
+      --rpc-http-host=0.0.0.0
+      --rpc-http-port=8547
+    networks:
+      - besu-network
+
+networks:
+  besu-network:
+    driver: bridge
+    name: besu-network
